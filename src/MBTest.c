@@ -21,10 +21,11 @@
 #include <arpa/inet.h>
 
 // constant and variables
-#define MAX_TTL 30
+#define MAX_TTL 40
 int src_port = 10100;
 int dst_port = 10100;
 int max_win  = 50000; // tcp maximum window size
+int RANDOM_MAX = 99999;
 char *dst_IP = "141.212.108.135"; // set the destination IP address (owl.eecs.umich.edu)
 
 /* reverse:  reverse string s in place */
@@ -129,6 +130,7 @@ int main (void)
 {
 	//Create a raw socket
 	int s = socket (PF_INET, SOCK_RAW, IPPROTO_TCP);
+	// printf("Create socket result is %d\n", s);
 
 	if(s == -1)
 	{
@@ -176,13 +178,14 @@ int main (void)
 	//TCP Header
 	tcph->source = htons (src_port);
 	tcph->dest = htons (dst_port);
-	tcph->seq = 0;
-	tcph->ack_seq = 0;
+	tcph->seq = rand()%RANDOM_MAX;
+	//printf("Sequence number is %d\n", (int)tcph->seq);
+	tcph->ack_seq = tcph->seq + 1;
 	tcph->doff = 5;	//tcp header size
 	tcph->fin=0;
 	tcph->syn=1;
 	tcph->rst=0;
-	tcph->psh=1;	// send no delay
+	tcph->psh=0;	// send no delay
 	tcph->ack=0;
 	tcph->urg=0;
 	tcph->window = htons (max_win);	/* maximum allowed window size */
@@ -209,6 +212,11 @@ int main (void)
 	int i;
 	char payload[2];
 	for (i = 1; i <= MAX_TTL; i++) {
+		// set TCP seq number
+		tcph->seq = i + rand()%RANDOM_MAX;
+		// printf("At round %d, sequence number is %d\n", i, (int)tcph->seq);
+		tcph->ack_seq = tcph->seq + 1;
+		tcph->source = htons(i+src_port);
 		// reset the TTL
 		iph->ttl = i;
 		// store the data the same as TTL value
@@ -229,20 +237,22 @@ int main (void)
 		pseudogram = malloc(psize);
 
 		memcpy(pseudogram , (char*) &psh , sizeof (struct pseudo_header));
-		memcpy(pseudogram + sizeof(struct pseudo_header) , tcph , sizeof(struct tcphdr) + strlen(data));
+		memcpy(pseudogram + sizeof(struct pseudo_header) , (char*) &tcph , sizeof(struct tcphdr) + strlen(data));
 
 		tcph->check = csum( (unsigned short*) pseudogram , psize);
 
 		//Send the packet
 		if (sendto (s, datagram, iph->tot_len ,	0, (struct sockaddr *) &sin, sizeof (sin)) < 0)
 		{
-			perror("sendto failed");
+			perror("send to failed");
 		}
 		//Data send successfully
 		else
 		{
 			printf ("Packet %d Send. Length : %d ; TTL: %d\n" , i, iph->tot_len, iph->ttl);
 		}
+		// sleep for 1 seconds
+		//sleep(1);
 	}
 
 	return 0;

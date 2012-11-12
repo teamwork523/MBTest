@@ -19,6 +19,7 @@
 #include <sys/ioctl.h>
 #include <net/if.h>
 #include <arpa/inet.h>
+#include <unistd.h>	// getpid
 
 // constant and variables
 #define MAX_TTL 40
@@ -167,7 +168,7 @@ int main (void)
 	iph->version = 4;
 	iph->tos = 0;
 	iph->tot_len = sizeof (struct iphdr) + sizeof (struct tcphdr) + strlen(data);
-	iph->id = htonl (54321);	//Id of this packet
+	iph->id = htonl ((getpid() & 0xffff) | 0x8000);	//Id of this packet
 	iph->frag_off = 0;
 	iph->ttl = 1;
 	iph->protocol = IPPROTO_TCP;

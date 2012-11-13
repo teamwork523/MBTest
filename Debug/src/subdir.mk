@@ -4,13 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/MBTest.c 
+../src/setOptionTTL.c 
 
 OBJS += \
-./src/MBTest.o 
+./src/setOptionTTL.o 
 
 C_DEPS += \
-./src/MBTest.d 
+./src/setOptionTTL.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

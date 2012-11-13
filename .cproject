@@ -43,11 +43,8 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.exe.debug.1514186845.493993757" name="MBTest.c" rcbsApplicability="disable" resourcePath="src/MBTest.c" toolsToInvoke="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.2113397938.393217687">
-						<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.2113397938.393217687" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.2113397938"/>
-					</fileInfo>
 					<sourceEntries>
-						<entry excluding="UDPttl.c|rawTCP.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="MBTest.c|UDPttl.c|rawTCP.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
